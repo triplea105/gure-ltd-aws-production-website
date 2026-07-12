@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact | Gure Ltd</title>
+    <meta
+      name="description"
+      content="Contact Gure Ltd or submit a quote request for logistics, vehicle hire, or construction materials."
+    >
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html">Gure Ltd</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+        <a href="#quote">Request a Quote</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page-hero" aria-labelledby="contact-title">
+        <p class="eyebrow">Contact</p>
+        <h1 id="contact-title">Send a service enquiry</h1>
+        <p>
+          Use the form below to request logistics support, vehicle hire, construction materials,
+          or a general quote.
+        </p>
+      </section>
+
+      <section id="quote" class="section quote-section" aria-labelledby="quote-title">
+        <div class="section-heading">
+          <p class="eyebrow">Quote request</p>
+          <h2 id="quote-title">Request details</h2>
+        </div>
+        <form class="quote-form">
+          <label>
+            Full name
+            <input type="text" name="full_name" autocomplete="name" required>
+          </label>
+          <label>
+            Email
+            <input type="email" name="email" autocomplete="email">
+          </label>
+          <label>
+            Phone number
+            <input type="tel" name="phone_number" autocomplete="tel" inputmode="tel" maxlength="20" required>
+          </label>
+          <label>
+            Service required
+            <select name="service_requested" required>
+              <option value="">Select a service</option>
+              <option value="logistics">Logistics</option>
+              <option value="vehicle_hire">Construction Vehicle Hire</option>
+              <option value="materials">Hardware / Materials</option>
+              <option value="general_enquiry">General Enquiry</option>
+            </select>
+          </label>
+          <label>
+            Location
+            <input type="text" name="location" autocomplete="address-level2" required>
+          </label>
+          <label class="full-width">
+            Message
+            <textarea name="message" rows="5" maxlength="1000" required></textarea>
+          </label>
+          <button class="button button-primary" type="submit">Submit Request</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Gure Ltd. Construction, materials, vehicle hire, and logistics services.</p>
+    </footer>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,95 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+env:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Compile Python
+        run: python -m compileall backend
+
+      - name: Run backend tests
+        run: python -m unittest discover
+
+      - name: Terraform format check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init without backend
+        working-directory: terraform/environments/prod
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        working-directory: terraform/environments/prod
+        run: terraform validate
+
+  deploy:
+    name: Terraform Deploy
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: gure-ltd-production-deploy
+          aws-region: eu-central-1
+          mask-aws-account-id: true
+
+      - name: Terraform init
+        working-directory: terraform/environments/prod
+        run: terraform init -input=false
+
+      - name: Terraform validate
+        working-directory: terraform/environments/prod
+        run: terraform validate
+
+      - name: Terraform plan
+        working-directory: terraform/environments/prod
+        run: terraform plan -input=false -lock-timeout=5m -out=tfplan
+
+      - name: Terraform apply
+        working-directory: terraform/environments/prod
+        run: terraform apply -input=false -auto-approve tfplan
+
+      - name: Terraform outputs
+        working-directory: terraform/environments/prod
+        run: terraform output

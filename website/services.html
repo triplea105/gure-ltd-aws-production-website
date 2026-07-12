@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Products & Services | Gure Ltd</title>
+    <meta
+      name="description"
+      content="Browse Gure Ltd plant hire, construction materials, and logistics service options."
+    >
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html">Gure Ltd</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+        <a href="contact.html#quote">Request a Quote</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="catalog-hero" aria-labelledby="services-title">
+        <div class="catalog-hero-content">
+          <p class="eyebrow">Products & services</p>
+          <h1 id="services-title">Browse hire, materials, and logistics options</h1>
+          <p>
+            Find the right equipment, supply, or transport service for your project and send a
+            focused enquiry to the Gure Ltd team.
+          </p>
+        </div>
+      </section>
+
+      <section class="catalog-shell" aria-labelledby="catalog-title">
+        <aside class="catalog-sidebar" aria-label="Service categories">
+          <p class="eyebrow">Categories</p>
+          <button class="catalog-filter is-active" type="button" data-category="all">All options</button>
+          <button class="catalog-filter" type="button" data-category="vehicle_hire">Plant & vehicle hire</button>
+          <button class="catalog-filter" type="button" data-category="hardware_materials">Materials & hardware</button>
+          <button class="catalog-filter" type="button" data-category="logistics">Logistics</button>
+        </aside>
+
+        <div class="catalog-main">
+          <div class="catalog-toolbar">
+            <div>
+              <p class="eyebrow">Gure catalogue</p>
+              <h2 id="catalog-title">Available options</h2>
+            </div>
+            <label class="catalog-search">
+              <span>Search</span>
+              <input type="search" name="catalog_search" placeholder="Search options" data-catalog-search>
+            </label>
+          </div>
+
+          <div class="product-grid" data-catalog-grid>
+            <article class="product-card" data-category="vehicle_hire" data-name="excavator plant hire earthmoving digging trenching">
+              <div class="product-media product-media-excavator" aria-hidden="true"></div>
+              <div class="product-body">
+                <p class="product-category">Plant & vehicle hire</p>
+                <h3>Excavator Hire</h3>
+                <p>Heavy machinery for digging, trenching, earthmoving, and site preparation.</p>
+                <div class="product-meta">
+                  <span class="status status-available">Available</span>
+                  <span>Project hire</span>
+                </div>
+                <a class="button button-primary" href="contact.html?service=vehicle_hire#quote">Enquire</a>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="vehicle_hire" data-name="wheel loader loading material handling construction vehicle">
+              <div class="product-media product-media-loader" aria-hidden="true"></div>
+              <div class="product-body">
+                <p class="product-category">Plant & vehicle hire</p>
+                <h3>Wheel Loader Hire</h3>
+                <p>Loading and material handling support for active construction and yard work.</p>
+                <div class="product-meta">
+                  <span class="status status-available">Available</span>
+                  <span>Site support</span>
+                </div>
+                <a class="button button-primary" href="contact.html?service=vehicle_hire#quote">Enquire</a>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="vehicle_hire" data-name="roller compaction road paving hire">
+              <div class="product-media product-media-roller" aria-hidden="true"></div>
+              <div class="product-body">
+                <p class="product-category">Plant & vehicle hire</p>
+                <h3>Roller Hire</h3>
+                <p>Compaction equipment for road, paving, and groundworks projects.</p>
+                <div class="product-meta">
+                  <span class="status status-unavailable">Unavailable</span>
+                  <span>Check dates</span>
+                </div>
+                <a class="button button-secondary-dark" href="contact.html?service=vehicle_hire#quote">Register Interest</a>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="hardware_materials" data-name="road paving blocks interlocking construction materials">
+              <div class="product-media product-media-pavers" aria-hidden="true"></div>
+              <div class="product-body">
+                <p class="product-category">Materials & hardware</p>
+                <h3>Road Paving Blocks</h3>
+                <p>Interlocking paving blocks for roads, yards, hardstanding, and site works.</p>
+                <div class="product-meta">
+                  <span class="status status-available">In Stock</span>
+                  <span>Bulk supply</span>
+                </div>
+                <a class="button button-primary" href="contact.html?service=materials#quote">Request Supply</a>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="hardware_materials" data-name="construction tools hardware supplies materials">
+              <div class="product-media product-media-tools" aria-hidden="true"></div>
+              <div class="product-body">
+                <p class="product-category">Materials & hardware</p>
+                <h3>Construction Tools</h3>
+                <p>Tool and hardware requests coordinated around active project needs.</p>
+                <div class="product-meta">
+                  <span class="status status-available">Available</span>
+                  <span>On request</span>
+                </div>
+                <a class="button button-primary" href="contact.html?service=materials#quote">Request Supply</a>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="hardware_materials" data-name="building materials cement aggregates construction supplies">
+              <div class="product-media product-media-materials" aria-hidden="true"></div>
+              <div class="product-body">
+                <p class="product-category">Materials & hardware</p>
+                <h3>Building Materials</h3>
+                <p>Construction materials sourced and coordinated for customer project requirements.</p>
+                <div class="product-meta">
+                  <span class="status status-request">Available on Request</span>
+                  <span>Quote required</span>
+                </div>
+                <a class="button button-primary" href="contact.html?service=materials#quote">Request Quote</a>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="logistics" data-name="fuel delivery transport commercial logistics">
+              <div class="product-media product-media-fuel" aria-hidden="true"></div>
+              <div class="product-body">
+                <p class="product-category">Logistics</p>
+                <h3>Fuel Delivery</h3>
+                <p>Fuel transport and delivery coordination for commercial and operational needs.</p>
+                <div class="product-meta">
+                  <span class="status status-available">Available</span>
+                  <span>Delivery service</span>
+                </div>
+                <a class="button button-primary" href="contact.html?service=logistics#quote">Book Delivery</a>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="logistics" data-name="cooking oil delivery distribution logistics">
+              <div class="product-media product-media-oil" aria-hidden="true"></div>
+              <div class="product-body">
+                <p class="product-category">Logistics</p>
+                <h3>Cooking Oil Delivery</h3>
+                <p>Delivery support for cooking oil supply and distribution operations.</p>
+                <div class="product-meta">
+                  <span class="status status-available">Available</span>
+                  <span>Scheduled runs</span>
+                </div>
+                <a class="button button-primary" href="contact.html?service=logistics#quote">Book Delivery</a>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="logistics" data-name="container transport movement commercial goods">
+              <div class="product-media product-media-container" aria-hidden="true"></div>
+              <div class="product-body">
+                <p class="product-category">Logistics</p>
+                <h3>Container Transport</h3>
+                <p>Container movement and commercial goods delivery for business operations.</p>
+                <div class="product-meta">
+                  <span class="status status-available">Available</span>
+                  <span>Route planning</span>
+                </div>
+                <a class="button button-primary" href="contact.html?service=logistics#quote">Plan Move</a>
+              </div>
+            </article>
+          </div>
+
+          <p class="catalog-empty" data-catalog-empty hidden>No matching options found.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Gure Ltd. Construction, materials, vehicle hire, and logistics services.</p>
+    </footer>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>

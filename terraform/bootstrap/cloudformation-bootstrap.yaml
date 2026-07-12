@@ -1,0 +1,207 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Bootstrap Terraform remote state and GitHub Actions OIDC deployment access
+
+Parameters:
+  TerraformStateBucketName:
+    Type: String
+    Default: gure-ltd-terraform-state-232913809627
+    Description: Globally unique S3 bucket name used to store Terraform state
+
+  TerraformLockTableName:
+    Type: String
+    Default: gure-ltd-terraform-locks
+    Description: DynamoDB table name used for Terraform state locking
+
+  GitHubRepository:
+    Type: String
+    Default: triplea105/gure-ltd-aws-production-website
+    Description: GitHub owner and repository allowed to assume the deployment role
+
+  GitHubEnvironment:
+    Type: String
+    Default: production
+    Description: Protected GitHub environment allowed to assume the deployment role
+
+  GitHubDeploymentRoleName:
+    Type: String
+    Default: gure-ltd-github-deploy
+    Description: IAM role assumed by the GitHub Actions deployment workflow
+
+Resources:
+  TerraformStateBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Ref TerraformStateBucketName
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  TerraformStateBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref TerraformStateBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !GetAtt TerraformStateBucket.Arn
+              - !Sub "${TerraformStateBucket.Arn}/*"
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+
+  TerraformLockTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Ref TerraformLockTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+
+  GitHubActionsOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      Tags:
+        - Key: Project
+          Value: gure-ltd
+        - Key: ManagedBy
+          Value: cloudformation
+
+  GitHubDeploymentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref GitHubDeploymentRoleName
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Ref GitHubActionsOidcProvider
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubRepository}:environment:${GitHubEnvironment}"
+      Policies:
+        - PolicyName: TerraformStateAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: ListStateBucket
+                Effect: Allow
+                Action: s3:ListBucket
+                Resource: !GetAtt TerraformStateBucket.Arn
+              - Sid: ManageStateObjects
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub "${TerraformStateBucket.Arn}/*"
+              - Sid: ManageStateLock
+                Effect: Allow
+                Action:
+                  - dynamodb:DescribeTable
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                Resource: !GetAtt TerraformLockTable.Arn
+        - PolicyName: TerraformApplicationDeployment
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: ManageApplicationServices
+                Effect: Allow
+                Action:
+                  - acm:*
+                  - apigateway:*
+                  - cloudfront:*
+                  - cloudwatch:*
+                  - dynamodb:*
+                  - lambda:*
+                  - logs:*
+                  - route53:*
+                  - ses:*
+                  - sns:*
+                  - wafv2:*
+                Resource: "*"
+              - Sid: ManageProjectBuckets
+                Effect: Allow
+                Action:
+                  - s3:CreateBucket
+                  - s3:DeleteBucket
+                  - s3:GetBucket*
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:PutBucket*
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource:
+                  - arn:aws:s3:::gure-ltd-*
+                  - arn:aws:s3:::gure-ltd-*/*
+              - Sid: ManageProjectLambdaRoles
+                Effect: Allow
+                Action:
+                  - iam:CreateRole
+                  - iam:DeleteRole
+                  - iam:DeleteRolePolicy
+                  - iam:GetRole
+                  - iam:GetRolePolicy
+                  - iam:ListRolePolicies
+                  - iam:PassRole
+                  - iam:PutRolePolicy
+                  - iam:TagRole
+                  - iam:UntagRole
+                  - iam:UpdateAssumeRolePolicy
+                Resource: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/gure-ltd-*"
+              - Sid: CreateRequiredServiceLinkedRoles
+                Effect: Allow
+                Action: iam:CreateServiceLinkedRole
+                Resource: "*"
+                Condition:
+                  StringLike:
+                    iam:AWSServiceName:
+                      - cloudfront.amazonaws.com
+                      - wafv2.amazonaws.com
+      Tags:
+        - Key: Project
+          Value: gure-ltd
+        - Key: ManagedBy
+          Value: cloudformation
+
+Outputs:
+  TerraformStateBucketName:
+    Description: Terraform backend S3 bucket name
+    Value: !Ref TerraformStateBucket
+
+  TerraformLockTableName:
+    Description: Terraform DynamoDB lock table name
+    Value: !Ref TerraformLockTable
+
+  GitHubDeploymentRoleArn:
+    Description: IAM role ARN to configure as the AWS_ROLE_TO_ASSUME GitHub environment secret
+    Value: !GetAtt GitHubDeploymentRole.Arn
