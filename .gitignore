@@ -1,11 +1,16 @@
+# Local agent/tooling files
+.agents/
+.codex/
+
 # Terraform
-.terraform/
+**/.terraform/
 *.tfstate
 *.tfstate.*
 crash.log
 crash.*.log
 *.tfvars
 *.tfvars.json
+*.zip
 
 # AWS / secrets
 .aws/
@@ -18,9 +23,10 @@ crash.*.log
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
 .venv/
 venv/
+.pytest_cache/
 
 # Node / frontend
 node_modules/
@@ -31,4 +37,3 @@ build/
 .DS_Store
 .vscode/
 .idea/
-EOF
