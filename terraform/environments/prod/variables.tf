@@ -43,7 +43,7 @@ variable "enable_custom_domain_alias" {
 variable "generate_deployed_api_config" {
   description = "Whether Terraform should replace the static frontend API config with the deployed API Gateway endpoint"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "enable_request_notifications" {
