@@ -3,6 +3,23 @@ const catalogFilters = document.querySelectorAll(".catalog-filter");
 const catalogCards = document.querySelectorAll(".product-card");
 const catalogSearch = document.querySelector("[data-catalog-search]");
 const catalogEmpty = document.querySelector("[data-catalog-empty]");
+const navToggle = document.querySelector(".nav-toggle");
+const siteNav = document.querySelector(".site-nav");
+
+if (navToggle && siteNav) {
+  navToggle.addEventListener("click", () => {
+    const isOpen = navToggle.getAttribute("aria-expanded") === "true";
+    navToggle.setAttribute("aria-expanded", String(!isOpen));
+    siteNav.classList.toggle("is-open", !isOpen);
+  });
+
+  siteNav.addEventListener("click", (event) => {
+    if (event.target.closest("a")) {
+      navToggle.setAttribute("aria-expanded", "false");
+      siteNav.classList.remove("is-open");
+    }
+  });
+}
 
 if (catalogCards.length > 0) {
   let activeCategory = "all";
@@ -45,6 +62,15 @@ if (catalogCards.length > 0) {
 if (quoteForm) {
   const selectedService = new URLSearchParams(window.location.search).get("service");
   const serviceSelect = quoteForm.querySelector("[name='service_requested']");
+  const submitButton = quoteForm.querySelector("button[type='submit']");
+  const formStatus = quoteForm.querySelector(".form-status");
+
+  const setFormStatus = (message, state = "") => {
+    if (formStatus) {
+      formStatus.textContent = message;
+      formStatus.dataset.state = state;
+    }
+  };
 
   if (selectedService && serviceSelect) {
     serviceSelect.value = selectedService;
@@ -55,8 +81,14 @@ if (quoteForm) {
 
     const apiBaseUrl = window.GURE_API_BASE_URL;
     if (!apiBaseUrl) {
-      alert("API configuration is not available yet.");
+      setFormStatus("The request service is temporarily unavailable. Please try again later.", "error");
       return;
+    }
+
+    setFormStatus("Submitting your request…");
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting…";
     }
 
     const formData = new FormData(quoteForm);
@@ -86,9 +118,14 @@ if (quoteForm) {
       }
 
       quoteForm.reset();
-      alert("Your request has been submitted.");
+      setFormStatus("Thank you. Your request has been submitted successfully.", "success");
     } catch (error) {
-      alert("We could not submit your request. Please try again later.");
+      setFormStatus("We could not submit your request. Please check your details and try again.", "error");
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit Request";
+      }
     }
   });
 }

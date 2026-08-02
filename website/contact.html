@@ -12,32 +12,42 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="index.html">Gure Ltd</a>
-      <nav class="site-nav" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="Gure Ltd home">
+        <span class="brand-mark">GL</span>
+        <span class="brand-text">Gure Ltd<small>Built to deliver</small></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-navigation"><span></span><span></span><span></span><span class="sr-only">Open navigation</span></button>
+      <nav id="main-navigation" class="site-nav" aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="services.html">Services</a>
-        <a href="contact.html">Contact</a>
-        <a href="#quote">Request a Quote</a>
+        <a href="contact.html" aria-current="page">Contact</a>
+        <a class="nav-cta" href="#quote">Request a Quote</a>
       </nav>
     </header>
 
     <main>
       <section class="page-hero" aria-labelledby="contact-title">
         <p class="eyebrow">Contact</p>
-        <h1 id="contact-title">Send a service enquiry</h1>
+        <h1 id="contact-title">Tell us what the job needs.</h1>
         <p>
           Use the form below to request logistics support, vehicle hire, construction materials,
           or a general quote.
         </p>
       </section>
 
-      <section id="quote" class="section quote-section" aria-labelledby="quote-title">
-        <div class="section-heading">
+      <section id="quote" class="section quote-section contact-layout" aria-labelledby="quote-title">
+        <div class="contact-intro">
           <p class="eyebrow">Quote request</p>
-          <h2 id="quote-title">Request details</h2>
+          <h2 id="quote-title">Share the practical details</h2>
+          <p>A clear brief helps us understand the right service and respond more effectively.</p>
+          <ul class="contact-checklist">
+            <li>Choose the service category</li>
+            <li>Include the project or delivery location</li>
+            <li>Explain quantities, dates or equipment needs</li>
+          </ul>
         </div>
-        <form class="quote-form">
+        <form class="quote-form" aria-describedby="form-status">
           <label>
             Full name
             <input type="text" name="full_name" autocomplete="name" required>
@@ -69,12 +79,13 @@
             <textarea name="message" rows="5" maxlength="1000" required></textarea>
           </label>
           <button class="button button-primary" type="submit">Submit Request</button>
+          <p id="form-status" class="form-status full-width" role="status" aria-live="polite"></p>
         </form>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p>Gure Ltd. Construction, materials, vehicle hire, and logistics services.</p>
+      <p><strong>Gure Ltd.</strong> Construction, materials, vehicle hire, and logistics services across Kenya.</p>
     </footer>
 
     <script src="assets/js/config.js"></script>

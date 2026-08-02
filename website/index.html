@@ -12,24 +12,28 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="index.html">Gure Ltd</a>
-      <nav class="site-nav" aria-label="Main navigation">
-        <a href="index.html">Home</a>
+      <a class="brand" href="index.html" aria-label="Gure Ltd home">
+        <span class="brand-mark">GL</span>
+        <span class="brand-text">Gure Ltd<small>Built to deliver</small></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-navigation"><span></span><span></span><span></span><span class="sr-only">Open navigation</span></button>
+      <nav id="main-navigation" class="site-nav" aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Home</a>
         <a href="about.html">About</a>
         <a href="services.html">Services</a>
         <a href="contact.html">Contact</a>
-        <a href="contact.html#quote">Request a Quote</a>
+        <a class="nav-cta" href="contact.html#quote">Request a Quote</a>
       </nav>
     </header>
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-content">
-          <p class="eyebrow">Kenya-based construction and logistics</p>
-          <h1 id="hero-title">Construction Materials, Equipment Hire & Logistics Solutions</h1>
+          <p class="eyebrow">Construction support across Kenya</p>
+          <h1 id="hero-title">The people, plant and materials to keep work moving.</h1>
           <p>
-            Gure Ltd supports construction and commercial operations with reliable materials,
-            machinery hire, and delivery services.
+            From earthmoving equipment to site materials and commercial transport, Gure Ltd
+            coordinates practical support around your programme, location and priorities.
           </p>
           <div class="hero-actions">
             <a class="button button-primary" href="services.html">Our Services</a>
@@ -39,10 +43,10 @@
       </section>
 
       <section class="trust-strip" aria-label="Trust points">
-        <span>Quality assured</span>
-        <span>Reliable delivery</span>
-        <span>Experienced team</span>
-        <span>Kenya-based operations</span>
+        <span><strong>01</strong> Clear quotations</span>
+        <span><strong>02</strong> Project-led planning</span>
+        <span><strong>03</strong> Responsive coordination</span>
+        <span><strong>04</strong> Kenya-based operations</span>
       </section>
 
       <section id="services" class="section" aria-labelledby="services-title">
@@ -52,32 +56,51 @@
         </div>
         <div class="service-grid">
           <article class="service-card">
+            <span class="card-number">01</span>
             <h3>Logistics</h3>
             <p>Fuel delivery, cooking oil delivery, container transport, and commercial goods movement.</p>
+            <a class="text-link" href="services.html">Explore logistics <span aria-hidden="true">→</span></a>
           </article>
           <article class="service-card">
+            <span class="card-number">02</span>
             <h3>Construction Vehicle Hire</h3>
             <p>Excavators, diggers, wheel loaders, rollers, and tipper trucks for construction projects.</p>
+            <a class="text-link" href="services.html">Explore plant hire <span aria-hidden="true">→</span></a>
           </article>
           <article class="service-card">
+            <span class="card-number">03</span>
             <h3>Hardware / Materials</h3>
             <p>Road paving blocks, building materials, construction tools, and hardware requests.</p>
+            <a class="text-link" href="services.html">Explore materials <span aria-hidden="true">→</span></a>
           </article>
         </div>
       </section>
 
-      <section id="quote" class="section quote-section" aria-labelledby="quote-title">
+      <section class="section section-dark" aria-labelledby="process-title">
         <div class="section-heading">
-          <p class="eyebrow">Enquiries</p>
-          <h2 id="quote-title">Request a quote</h2>
-          <p>Use the full contact page when you are ready to submit detailed enquiry information.</p>
+          <p class="eyebrow">How we work</p>
+          <h2 id="process-title">Straightforward support from enquiry to delivery</h2>
+          <p>Tell us what the job needs. We will use those details to coordinate the right response.</p>
         </div>
-        <a class="button button-primary" href="contact.html#quote">Open Quote Form</a>
+        <ol class="process-grid">
+          <li><span>01</span><h3>Share the requirement</h3><p>Send the service, location, timing and project details.</p></li>
+          <li><span>02</span><h3>Confirm the plan</h3><p>We review availability and clarify the practical details.</p></li>
+          <li><span>03</span><h3>Coordinate delivery</h3><p>Plant, materials or transport are arranged around the agreed plan.</p></li>
+        </ol>
+      </section>
+
+      <section id="quote" class="section quote-section cta-band" aria-labelledby="quote-title">
+        <div>
+          <p class="eyebrow">Enquiries</p>
+          <h2 id="quote-title">Have a project requirement?</h2>
+          <p>Give us the details and start a practical conversation with the Gure Ltd team.</p>
+        </div>
+        <a class="button button-primary" href="contact.html#quote">Request a Quote</a>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p>Gure Ltd. Construction, materials, vehicle hire, and logistics services.</p>
+      <p><strong>Gure Ltd.</strong> Construction, materials, vehicle hire, and logistics services across Kenya.</p>
     </footer>
 
     <script src="assets/js/config.js"></script>
