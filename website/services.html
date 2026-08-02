@@ -12,13 +12,17 @@
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="index.html">Gure Ltd</a>
-      <nav class="site-nav" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="Gure Ltd home">
+        <span class="brand-mark">GL</span>
+        <span class="brand-text">Gure Ltd<small>Built to deliver</small></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-navigation"><span></span><span></span><span></span><span class="sr-only">Open navigation</span></button>
+      <nav id="main-navigation" class="site-nav" aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
-        <a href="services.html">Services</a>
+        <a href="services.html" aria-current="page">Services</a>
         <a href="contact.html">Contact</a>
-        <a href="contact.html#quote">Request a Quote</a>
+        <a class="nav-cta" href="contact.html#quote">Request a Quote</a>
       </nav>
     </header>
 
@@ -186,10 +190,19 @@
           <p class="catalog-empty" data-catalog-empty hidden>No matching options found.</p>
         </div>
       </section>
+
+      <section class="section cta-band" aria-labelledby="services-cta-title">
+        <div>
+          <p class="eyebrow">Need something specific?</p>
+          <h2 id="services-cta-title">Let us understand the job.</h2>
+          <p>Send the location, service and timing. We will use the details to plan the next step.</p>
+        </div>
+        <a class="button button-primary" href="contact.html#quote">Discuss Your Requirement</a>
+      </section>
     </main>
 
     <footer class="site-footer">
-      <p>Gure Ltd. Construction, materials, vehicle hire, and logistics services.</p>
+      <p><strong>Gure Ltd.</strong> Construction, materials, vehicle hire, and logistics services across Kenya.</p>
     </footer>
 
     <script src="assets/js/config.js"></script>
