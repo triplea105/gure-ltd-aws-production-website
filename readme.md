@@ -106,15 +106,16 @@ Developer
 | Frontend | HTML, CSS, JavaScript | Website pages, service display and request forms |
 | Hosting | Amazon S3 | Private frontend asset storage |
 | CDN | Amazon CloudFront | Public HTTPS delivery and caching |
-| Security | AWS WAF, IAM, OAC | Traffic protection and private S3 access |
+| Security | AWS WAF, IAM, OAC, Trivy | Traffic protection, least privilege and IaC scanning |
 | API | Amazon API Gateway HTTP API | Public backend routes |
 | Compute | AWS Lambda with Python 3.12 | Backend business logic |
 | Database | Amazon DynamoDB | Service availability and customer request storage |
 | Email | Amazon SES | Business request notifications |
 | Alerts | Amazon SNS | Operational email alerts |
-| Observability | Amazon CloudWatch | Logs, metrics, dashboard and alarms |
+| Observability | Amazon CloudWatch, AWS X-Ray | Logs, metrics, traces, dashboard and alarms |
+| Cost control | AWS Budgets | Forecast and actual monthly cost alerts |
 | Infrastructure | Terraform | Application infrastructure as code |
-| Bootstrap | CloudFormation | Terraform state bucket, lock table and GitHub deploy role |
+| Bootstrap | CloudFormation | Terraform state bucket and GitHub deploy role |
 | CI/CD | GitHub Actions, GitHub OIDC | Automated validation and deployment |
 | Testing | Python unittest, Terraform validate | Local and pull-request quality checks |
 
@@ -138,7 +139,9 @@ Plan the change
 
 Terraform is the source of truth for AWS application infrastructure. Manual console changes should be avoided unless they are part of a clearly understood recovery step.
 
-The Terraform backend is created separately with CloudFormation because Terraform needs its remote state bucket and lock table before it can safely manage the application infrastructure.
+The Terraform backend is created separately with CloudFormation because Terraform needs its remote state bucket before it can safely manage the application infrastructure. Native S3 lockfiles prevent concurrent state writes.
+
+When migrating an existing checkout from DynamoDB locking, run `terraform init -reconfigure`. The retained legacy lock table can be deleted manually only after confirming no older Terraform client still uses it.
 
 The GitHub Actions deployment uses OIDC instead of long-lived AWS access keys. GitHub receives temporary AWS credentials by assuming this role:
 
@@ -154,7 +157,7 @@ arn:aws:iam::232913809627:role/gure-ltd-github-deploy
 |---|---|---|
 | Terraform backend stack | `gure-ltd-terraform-backend` | Creates backend state resources and GitHub deploy role |
 | Terraform state bucket | `gure-ltd-terraform-state-232913809627` | Stores remote Terraform state |
-| Terraform lock table | `gure-ltd-terraform-locks` | Prevents concurrent Terraform writes |
+| Terraform state lock | S3 lockfile | Prevents concurrent Terraform writes |
 | Website bucket | `gure-ltd-prod-website-232913809627` | Stores frontend files privately |
 | CloudFront distribution | `E1AQVMO70BTTKD` | Serves the website publicly |
 | CloudFront domain | `d1y23ltbnxx3ux.cloudfront.net` | Current browser URL |
@@ -168,6 +171,7 @@ arn:aws:iam::232913809627:role/gure-ltd-github-deploy
 | SNS topic | `gure-ltd-prod-alerts` | Sends operational alerts |
 | CloudWatch dashboard | `gure-ltd-prod-operations` | Shows operational metrics |
 | WAF | `gure-ltd-prod-cloudfront-waf` | Adds managed protections and rate limiting |
+| Monthly budget | `gure-ltd-prod-monthly-cost` | Alerts at 80% forecast and 100% actual spend |
 
 The custom domain resources are optional. Route 53 and ACM stay disabled until a real domain is purchased and ready to attach.
 
@@ -179,7 +183,7 @@ The project was built in layers so each part could be tested before moving on.
 
 First, the project decisions were confirmed: AWS account, AWS region, environment name, email address and GitHub repository.
 
-Next, the Terraform backend was bootstrapped using CloudFormation. This created the remote state S3 bucket, DynamoDB lock table and GitHub Actions deployment role.
+Next, the Terraform backend was bootstrapped using CloudFormation. This created the remote state S3 bucket and GitHub Actions deployment role; Terraform uses an S3 lockfile to prevent concurrent state writes.
 
 After that, local quality checks were added and verified. The backend compiles, unit tests pass, Terraform formatting passes and Terraform validation passes.
 
@@ -220,7 +224,7 @@ Pull requests run the validation workflow:
 .github/workflows/pull-request.yml
 ```
 
-The pull-request workflow checks Python compilation, backend tests, Terraform formatting and Terraform validation.
+The pull-request workflow checks Python compilation, backend tests, Terraform formatting, Terraform validation and high/critical infrastructure misconfigurations.
 
 Deployments run from:
 
@@ -229,6 +233,8 @@ Deployments run from:
 ```
 
 The deployment workflow runs when changes are merged into `main`. It assumes the AWS deployment role through GitHub OIDC, initializes Terraform with the remote backend, validates the configuration, creates a Terraform plan and applies it.
+
+Changes to the bootstrap CloudFormation stack must be deployed before an application deployment that needs new role permissions, such as AWS Budgets or X-Ray.
 
 The GitHub repository should have a `production` environment with this secret:
 
@@ -240,7 +246,7 @@ The GitHub `main` branch should be protected with pull-request review and requir
 
 Important deployment fixes already implemented:
 
-The GitHub deployment role needed extra permissions because Terraform reads resource settings during create, update and delete operations. The CloudFormation bootstrap template was updated to include permissions such as `iam:ListAttachedRolePolicies`, `iam:ListInstanceProfilesForRole`, `s3:Get*`, `s3:ListBucketVersions`, `s3:PutEncryptionConfiguration` and `s3:DeleteObjectVersion`.
+The GitHub deployment role includes the read and write operations Terraform needs while restricting IAM roles and S3 buckets to project naming patterns. Service permissions are enumerated instead of granting every action for each application service.
 
 The frontend API config is generated by Terraform so the browser always points to the current API Gateway endpoint. This prevents the website from using an old destroyed API URL after infrastructure is recreated.
 
@@ -307,12 +313,16 @@ Monitoring includes:
 ```text
 Lambda errors
 Lambda throttles
+Lambda p95 duration
+API Gateway 4xx errors
 API Gateway 5xx errors
 API Gateway latency
 DynamoDB throttles
 DynamoDB system errors
 SES notification failures
 ```
+
+Lambda active tracing sends traces to AWS X-Ray. The requests route also has stricter API throttling and reserved Lambda concurrency to limit abusive or accidental traffic spikes. Lambda dead-letter queues are not configured because API Gateway invokes these functions synchronously; errors are returned to the caller and monitored through logs, metrics and alarms.
 
 Operational dashboard:
 

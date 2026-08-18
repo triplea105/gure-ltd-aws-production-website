@@ -109,3 +109,14 @@ variable "waf_rate_limit" {
     error_message = "waf_rate_limit must be at least 100 requests per five minutes."
   }
 }
+
+variable "monthly_budget_usd" {
+  description = "Monthly AWS cost budget in US dollars"
+  type        = number
+  default     = 25
+
+  validation {
+    condition     = var.monthly_budget_usd > 0
+    error_message = "monthly_budget_usd must be greater than zero."
+  }
+}

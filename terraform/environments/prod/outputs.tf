@@ -57,3 +57,8 @@ output "cloudwatch_dashboard_name" {
   description = "Name of the CloudWatch operations dashboard"
   value       = aws_cloudwatch_dashboard.application.dashboard_name
 }
+
+output "monthly_budget_name" {
+  description = "Name of the monthly AWS cost budget"
+  value       = aws_budgets_budget.monthly.name
+}
