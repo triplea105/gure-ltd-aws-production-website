@@ -52,6 +52,15 @@ jobs:
         working-directory: terraform/environments/prod
         run: terraform validate
 
+      - name: Scan infrastructure configuration
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: config
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          trivyignores: .trivyignore.yaml
+
   deploy:
     name: Terraform Deploy
     needs: validate
@@ -76,7 +85,7 @@ jobs:
 
       - name: Terraform init
         working-directory: terraform/environments/prod
-        run: terraform init -input=false
+        run: terraform init -reconfigure -input=false
 
       - name: Terraform validate
         working-directory: terraform/environments/prod

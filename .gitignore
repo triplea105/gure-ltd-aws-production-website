@@ -11,6 +11,8 @@ crash.*.log
 *.tfvars
 *.tfvars.json
 *.zip
+*.tfplan
+tfplan
 
 # AWS / secrets
 .aws/
