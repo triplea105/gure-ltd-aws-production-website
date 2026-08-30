@@ -139,7 +139,7 @@ Plan the change
 
 Terraform is the source of truth for AWS application infrastructure. Manual console changes should be avoided unless they are part of a clearly understood recovery step.
 
-The Terraform backend is created separately with CloudFormation because Terraform needs its remote state bucket before it can safely manage the application infrastructure. Native S3 lockfiles prevent concurrent state writes.
+The Terraform backend is created separately with CloudFormation because Terraform needs its remote state bucket before it can safely manage the application infrastructure. Native S3 lockfiles prevent concurrent state writes, and a rotating customer-managed KMS key encrypts the state and lockfile.
 
 When migrating an existing checkout from DynamoDB locking, run `terraform init -reconfigure`. The retained legacy lock table can be deleted manually only after confirming no older Terraform client still uses it.
 
@@ -156,7 +156,7 @@ arn:aws:iam::232913809627:role/gure-ltd-github-deploy
 | Resource | Name or Details | Purpose |
 |---|---|---|
 | Terraform backend stack | `gure-ltd-terraform-backend` | Creates backend state resources and GitHub deploy role |
-| Terraform state bucket | `gure-ltd-terraform-state-232913809627` | Stores remote Terraform state |
+| Terraform state bucket | `gure-ltd-terraform-state-232913809627` | Stores KMS-encrypted remote Terraform state |
 | Terraform state lock | S3 lockfile | Prevents concurrent Terraform writes |
 | Website bucket | `gure-ltd-prod-website-232913809627` | Stores frontend files privately |
 | CloudFront distribution | `E1AQVMO70BTTKD` | Serves the website publicly |

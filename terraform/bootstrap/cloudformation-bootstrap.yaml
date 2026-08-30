@@ -23,6 +23,34 @@ Parameters:
     Description: IAM role assumed by the GitHub Actions deployment workflow
 
 Resources:
+  TerraformStateKey:
+    Type: AWS::KMS::Key
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      Description: Customer managed key for Terraform state encryption
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: EnableAccountPermissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:root"
+            Action: "kms:*"
+            Resource: "*"
+      Tags:
+        - Key: Project
+          Value: gure-ltd
+        - Key: ManagedBy
+          Value: cloudformation
+
+  TerraformStateKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: alias/gure-ltd-terraform-state
+      TargetKeyId: !Ref TerraformStateKey
+
   TerraformStateBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
@@ -33,8 +61,10 @@ Resources:
         Status: Enabled
       BucketEncryption:
         ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
+          - BucketKeyEnabled: true
+            ServerSideEncryptionByDefault:
+              KMSMasterKeyID: !GetAtt TerraformStateKey.Arn
+              SSEAlgorithm: aws:kms
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
@@ -103,6 +133,14 @@ Resources:
                   - s3:PutObject
                   - s3:DeleteObject
                 Resource: !Sub "${TerraformStateBucket.Arn}/*"
+              - Sid: UseStateEncryptionKey
+                Effect: Allow
+                Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:GenerateDataKey
+                Resource: !GetAtt TerraformStateKey.Arn
         - PolicyName: TerraformApplicationDeployment
           PolicyDocument:
             Version: "2012-10-17"
@@ -295,3 +333,7 @@ Outputs:
   GitHubDeploymentRoleArn:
     Description: IAM role ARN to configure as the AWS_ROLE_TO_ASSUME GitHub environment secret
     Value: !GetAtt GitHubDeploymentRole.Arn
+
+  TerraformStateKeyArn:
+    Description: Customer managed KMS key used to encrypt Terraform state
+    Value: !GetAtt TerraformStateKey.Arn

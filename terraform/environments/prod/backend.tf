@@ -5,6 +5,7 @@ terraform {
     key          = "prod/terraform.tfstate"
     region       = "eu-central-1"
     encrypt      = true
+    kms_key_id   = "alias/gure-ltd-terraform-state"
     use_lockfile = true
   }
 }
