@@ -196,15 +196,13 @@ resource "aws_lambda_function" "services" {
 }
 
 resource "aws_lambda_function" "requests" {
-  function_name                  = "${local.name_prefix}-requests"
-  role                           = aws_iam_role.lambda_execution["requests"].arn
-  runtime                        = var.lambda_runtime
-  handler                        = "backend.handlers.requests.handler"
-  filename                       = data.archive_file.backend.output_path
-  source_code_hash               = data.archive_file.backend.output_base64sha256
-  timeout                        = 15
-  reserved_concurrent_executions = 10
-
+  function_name    = "${local.name_prefix}-requests"
+  role             = aws_iam_role.lambda_execution["requests"].arn
+  runtime          = var.lambda_runtime
+  handler          = "backend.handlers.requests.handler"
+  filename         = data.archive_file.backend.output_path
+  source_code_hash = data.archive_file.backend.output_base64sha256
+  timeout          = 15
   tracing_config {
     mode = "Active"
   }
@@ -227,4 +225,3 @@ resource "aws_lambda_function" "requests" {
 
   tags = local.common_tags
 }
-

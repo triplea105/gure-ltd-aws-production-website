@@ -264,6 +264,7 @@ Resources:
                   - s3:GetBucketCORS
                   - s3:GetBucketLogging
                   - s3:GetBucketLocation
+                  - s3:GetBucketObjectLockConfiguration
                   - s3:GetBucketPolicy
                   - s3:GetBucketPolicyStatus
                   - s3:GetBucketPublicAccessBlock
