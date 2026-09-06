@@ -211,15 +211,25 @@ Resources:
                   - lambda:UpdateFunctionCode
                   - lambda:UpdateFunctionConfiguration
                   - logs:CreateLogGroup
+                  - logs:CreateLogDelivery
+                  - logs:DeleteLogDelivery
                   - logs:DeleteLogGroup
                   - logs:DeleteMetricFilter
+                  - logs:DescribeLogStreams
                   - logs:DescribeLogGroups
                   - logs:DescribeMetricFilters
+                  - logs:DescribeResourcePolicies
+                  - logs:FilterLogEvents
+                  - logs:GetLogDelivery
+                  - logs:GetLogEvents
                   - logs:ListTagsForResource
+                  - logs:ListLogDeliveries
                   - logs:PutMetricFilter
                   - logs:PutRetentionPolicy
+                  - logs:PutResourcePolicy
                   - logs:TagResource
                   - logs:UntagResource
+                  - logs:UpdateLogDelivery
                   - route53:ChangeResourceRecordSets
                   - route53:CreateHostedZone
                   - route53:DeleteHostedZone
