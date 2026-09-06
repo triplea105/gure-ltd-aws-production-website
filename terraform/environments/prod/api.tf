@@ -17,6 +17,8 @@ resource "aws_apigatewayv2_stage" "default" {
   name        = "$default"
   auto_deploy = true
 
+  depends_on = [aws_apigatewayv2_route.requests]
+
   default_route_settings {
     detailed_metrics_enabled = true
     throttling_burst_limit   = 50
@@ -115,4 +117,3 @@ resource "aws_lambda_permission" "requests_api" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.this.execution_arn}/*/POST/requests"
 }
-
