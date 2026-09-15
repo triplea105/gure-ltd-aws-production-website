@@ -106,7 +106,7 @@ Developer
 | Frontend | HTML, CSS, JavaScript | Website pages, service display and request forms |
 | Hosting | Amazon S3 | Private frontend asset storage |
 | CDN | Amazon CloudFront | Public HTTPS delivery and caching |
-| Security | AWS WAF, IAM, OAC, Trivy | Traffic protection, least privilege and IaC scanning |
+| Security | AWS WAF, IAM, OAC | Traffic protection, least privilege and private origin access |
 | API | Amazon API Gateway HTTP API | Public backend routes |
 | Compute | AWS Lambda with Python 3.12 | Backend business logic |
 | Database | Amazon DynamoDB | Service availability and customer request storage |
@@ -224,7 +224,7 @@ Pull requests run the validation workflow:
 .github/workflows/pull-request.yml
 ```
 
-The pull-request workflow checks Python compilation, backend tests, Terraform formatting, Terraform validation and high/critical infrastructure misconfigurations.
+The pull-request workflow checks Python compilation, backend tests, Terraform formatting and Terraform validation.
 
 Deployments run from:
 
